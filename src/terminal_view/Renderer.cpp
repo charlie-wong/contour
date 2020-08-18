@@ -54,6 +54,11 @@ Renderer::Renderer(Logger _logger,
         _colorProfile,
         renderTarget_
     },
+    imageRenderer_{
+        renderTarget_,
+        renderTarget_.coloredAtlasAllocator(),
+        cellSize()
+    },
     textRenderer_{
         metrics_,
         renderTarget_,

@@ -405,6 +405,7 @@ constexpr inline auto SETMARK     = detail::CSI('>', 0, 0, std::nullopt, 'M', VT
 
 // CSI functions
 constexpr inline auto DECRQSS     = detail::DCS(std::nullopt, 0, 0, '$', 'q', VTType::VT420, "DECRQSS", "Request Status String");
+constexpr inline auto DECSIXEL    = detail::DCS(std::nullopt, 0, 3, std::nullopt, 'q', VTType::VT330, "DECSIXEL", "Sixel Graphics Image");
 
 // OSC
 constexpr inline auto SETTITLE      = detail::OSC(0, "SETINICON", "Change Window & Icon Title");
@@ -519,6 +520,7 @@ inline auto const& functions()
 
             // DCS
             DECRQSS,
+            DECSIXEL,
 
             // OSC
             SETICON,

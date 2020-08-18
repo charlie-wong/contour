@@ -21,6 +21,7 @@ set(terminal_HEADERS
     Commands.h
     Debugger.h
     Functions.h
+    Image.h
     InputGenerator.h
     OutputGenerator.h
     Parser.h
@@ -29,6 +30,7 @@ set(terminal_HEADERS
     Screen.h
     ScreenBuffer.h
     Selector.h
+    SixelParser.h
     Terminal.h
     TerminalProcess.h
     VTType.h
@@ -42,6 +44,7 @@ set(terminal_SOURCES
     Commands.cpp
     Debugger.cpp
     Functions.cpp
+    Image.cpp
     InputGenerator.cpp
     OutputGenerator.cpp
     Parser.cpp
@@ -50,6 +53,7 @@ set(terminal_SOURCES
     Screen.cpp
     ScreenBuffer.cpp
     Selector.cpp
+    SixelParser.cpp
     Terminal.cpp
     TerminalProcess.cpp
     VTType.cpp
@@ -89,6 +93,7 @@ if(LIBTERMINAL_TESTING)
         Functions_test.cpp
         Parser_test.cpp
         Screen_test.cpp
+        SixelParser_test.cpp
     )
     target_link_libraries(terminal_test fmt::fmt-header-only Catch2::Catch2 terminal)
     add_test(terminal_test ./terminal_test)

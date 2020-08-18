@@ -452,6 +452,7 @@ void OutputGenerator::operator()(Command const& command)
         },
         [&](SaveWindowTitle const&) { write("\033[22;0;0t"); },
         [&](RestoreWindowTitle const&) { write("\033[23;0;0t"); },
+        [&](SixelImage const& v) { write("\033Pq{}\033\\", v.data); },
         [&](InvalidCommand const& v) { write(v.sequence.raw()); }
     }, command);
 }

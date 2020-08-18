@@ -884,6 +884,11 @@ struct RequestStatusString {
     Value value;
 };
 
+/// DECSIXEL - Sixel Graphics Image.
+struct SixelImage {
+    std::string data; // unparsed sixel image data
+};
+
 /// DECTABSR - Tab Stop Report
 ///
 /// Requests currently configured tab stops.
@@ -1025,6 +1030,7 @@ using Command = std::variant<
     SetTopBottomMargin,
     SetUnderlineColor,
     SingleShiftSelect,
+    SixelImage,
     SoftTerminalReset
 >;
 
@@ -1118,6 +1124,7 @@ class CommandVisitor {
     virtual void visit(SetTopBottomMargin const& v) = 0;
     virtual void visit(SetUnderlineColor const& v) = 0;
     virtual void visit(SingleShiftSelect const& v) = 0;
+    virtual void visit(SixelImage const& v) = 0;
     virtual void visit(SoftTerminalReset const& v) = 0;
     virtual void visit(InvalidCommand const& v) = 0;
 
@@ -1201,6 +1208,7 @@ class CommandVisitor {
     void operator()(SetTopBottomMargin const& v) { visit(v); }
     void operator()(SetUnderlineColor const& v) { visit(v); }
     void operator()(SingleShiftSelect const& v) { visit(v); }
+    void operator()(SixelImage const& v) { visit(v); }
     void operator()(SoftTerminalReset const& v) { visit(v); }
     void operator()(InvalidCommand const& v) { visit(v); }
     // }}}

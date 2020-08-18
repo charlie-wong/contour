@@ -16,6 +16,7 @@
 #include <terminal/VTType.h>
 #include <terminal/Logger.h>
 #include <terminal/Debugger.h>
+#include <terminal/SixelParser.h>
 
 #include <crispy/algorithm.h>
 #include <crispy/escape.h>
@@ -1148,6 +1149,39 @@ void Screen::singleShiftSelect(CharsetTable _table)
     buffer_->cursor.charsets.singleShift(_table);
 }
 
+void Screen::sixelImage(string_view const& _data)
+{
+    std::cout << fmt::format("[SixelImage] received {} data bytes\n", _data.size());
+
+    auto const maxSize = Size{800, 600}; // TODO: do not hard-code me
+    auto const defaultColor = RGBColor{}; // TODO: what should it be (default/current background color?)
+    auto imageBuilder = SixelImageBuilder{maxSize, defaultColor};
+    SixelParser::parse(_data, imageBuilder);
+
+    auto const imageRef = imagePool_.create(imageBuilder.data(), imageBuilder.size());
+    auto const columnCount = imageRef.get().width() / cellPixelSize_.width;
+    auto const rowCount = imageRef.get().height() / cellPixelSize_.height;
+    auto const extent = Size{columnCount, rowCount};
+    auto const topLeft = cursorPosition();
+
+    auto const imageInstance = RasterizedImage{
+        imageRef,
+        cellPixelSize_,
+        ImageAlignment::TopStart,
+        ImageResize::NoResize
+    };
+
+    for (Coordinate const offset : extent)
+        at(topLeft + offset).setImage(imageInstance.fragment(offset));
+
+    moveCursorTo(topLeft + extent + Coordinate{-1, 0});
+
+    // XXX some debug prints before doing the actual render-fu
+    std::cout << fmt::format("[SixelImage] size: {}\n", imageBuilder.size());
+    std::cout << fmt::format("[SixelImage] aspect ratio: {}/{}\n", imageBuilder.aspectRatioNominator(), imageBuilder.aspectRatioDenominator());
+    std::cout << fmt::format("[SixelImage] render position top-left: {}, extent: {}\n", topLeft, extent);
+}
+
 void Screen::setWindowTitle(std::string const& _title)
 {
     windowTitle_ = _title;
@@ -1360,6 +1394,7 @@ void DirectExecutor::visit(SetMode const& v) { screen_.setMode(v.mode, v.enable)
 void DirectExecutor::visit(SetTopBottomMargin const& v) { screen_.setTopBottomMargin(v.top, v.bottom); }
 void DirectExecutor::visit(SetUnderlineColor const& v) { screen_.setUnderlineColor(v.color); }
 void DirectExecutor::visit(SingleShiftSelect const& v) { screen_.singleShiftSelect(v.table); }
+void DirectExecutor::visit(SixelImage const& v) { screen_.sixelImage(v.data); }
 void DirectExecutor::visit(SoftTerminalReset const&) { screen_.resetSoft(); }
 void DirectExecutor::visit(InvalidCommand const& v) { if (logger_) logger_(InvalidOutputEvent{v.sequence.text(), "Unknown command"}); }
 // }}}

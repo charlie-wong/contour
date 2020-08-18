@@ -16,6 +16,7 @@
 #include <terminal_view/BackgroundRenderer.h>
 #include <terminal_view/CursorRenderer.h>
 #include <terminal_view/DecorationRenderer.h>
+#include <terminal_view/ImageRenderer.h>
 #include <terminal_view/TextRenderer.h>
 
 #include <terminal_view/RenderMetrics.h>
@@ -136,6 +137,7 @@ class Renderer {
     OpenGLRenderer renderTarget_;
 
     BackgroundRenderer backgroundRenderer_;
+    ImageRenderer imageRenderer_;
     TextRenderer textRenderer_;
     DecorationRenderer decorationRenderer_;
     CursorRenderer cursorRenderer_;

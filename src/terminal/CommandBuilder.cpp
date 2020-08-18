@@ -600,6 +600,14 @@ namespace impl // {{{ some command generator helpers
         return ApplyResult::Unsupported;
     }
 
+    ApplyResult DECSIXEL(Sequence const& _ctx, CommandList& _output)
+    {
+        // TODO: do not copy the whole preread data string but pass it inflight to the
+        // sub-level parser (FSM) to construct the target state (here: an image)
+        emitCommand<SixelImage>(_output, _ctx.dataString());
+        return ApplyResult::Ok;
+    }
+
     ApplyResult WINDOWMANIP(Sequence const& _ctx, CommandList& _output)
     {
         if (_ctx.parameterCount() == 3)
@@ -915,6 +923,7 @@ ApplyResult apply(FunctionDefinition const& _function, Sequence const& _ctx, Com
 
         // DCS
         case DECRQSS: return impl::DECRQSS(_ctx, _output);
+        case DECSIXEL: return impl::DECSIXEL(_ctx, _output);
 
         // OSC
         case SETTITLE:

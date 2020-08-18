@@ -17,6 +17,7 @@
 #include <terminal/CommandBuilder.h>
 #include <terminal/Commands.h>
 #include <terminal/Hyperlink.h>
+#include <terminal/Image.h>
 #include <terminal/InputGenerator.h> // MouseTransport
 #include <terminal/Logger.h>
 #include <terminal/Parser.h>
@@ -144,6 +145,7 @@ class DirectExecutor : public CommandVisitor {
     void visit(SetTopBottomMargin const& v) override;
     void visit(SetUnderlineColor const& v) override;
     void visit(SingleShiftSelect const& v) override;
+    void visit(SixelImage const& v) override;
     void visit(SoftTerminalReset const& v) override;
     void visit(InvalidCommand const& v) override;
 };
@@ -224,6 +226,7 @@ class SynchronizedExecutor : public DirectExecutor {
     void visit(SetTopBottomMargin const& v) override { enqueue(v); }
     void visit(SetUnderlineColor const& v) override { enqueue(v); }
     void visit(SingleShiftSelect const& v) override { enqueue(v); }
+    void visit(SixelImage const& v) override { enqueue(v); }
     void visit(InvalidCommand const& v) override { enqueue(v); }
 };
 
@@ -380,6 +383,7 @@ class Screen {
     void designateCharset(CharsetTable _table, CharsetId _charset);
     void singleShiftSelect(CharsetTable _table);
     void requestPixelSize(RequestPixelSize::Area _area);
+    void sixelImage(std::string_view const& v);
     void requestStatusString(RequestStatusString::Value _value);
     void requestTabStops();
     void resetDynamicColor(DynamicColorName _name);
@@ -571,6 +575,7 @@ class Screen {
     VTType terminalId_ = VTType::VT525;
 
     Modes modes_;
+    ImagePool imagePool_;
 
     ScreenBuffer primaryBuffer_;
     ScreenBuffer alternateBuffer_;
